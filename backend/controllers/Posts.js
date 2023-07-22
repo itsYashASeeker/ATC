@@ -56,11 +56,11 @@ const likePosts = asyncHandler(async (req, res) => {
     const { postID } = req.body;
     const pExist = await Posts.findById({ _id: postID });
     if (!pExist) {
-        return res.status(400).json({ error: "Post doesn't exist!" });
+        return res.status(402).json({ error: "Post doesn't exist!" });
     }
     try {
         if (pExist.likes.includes(req.user._id)) {
-            return res.status(400).json({ error: "You have already liked" });
+            return res.status(402).json({ error: "You have already liked" });
         }
         const postFound = await Posts.findByIdAndUpdate(
             postID,
@@ -75,7 +75,7 @@ const likePosts = asyncHandler(async (req, res) => {
     }
     catch (err) {
         console.log(err);
-        return res.status(400).json({ error: err });
+        return res.status(402).json({ error: err });
     }
 });
 
@@ -103,30 +103,30 @@ const dislikePosts = asyncHandler(async (req, res) => {
     }
 });
 
-const fetchPosts = asyncHandler(async(req,res)=>{
-    try{
+const fetchPosts = async (req, res) => {
+    try {
         await Posts.find()
             .populate("author", "-password")
             .populate("likes", "-password")
             .populate("comments", "-password")
-        .populate("communities")
-        .sort({updatedAt: -1})
-        .then(async(fposts)=>{
-            fposts = await User.populate(fposts, {
-                path: "communityId.admins",
-                select: "name username profile_pic"
+            .sort({ updatedAt: -1 })
+            .then(async (fposts) => {
+                fposts = await User.populate(fposts, {
+                    path: "communityId.admins",
+                    select: "name username profile_pic"
+                })
+                fposts = await User.populate(fposts, {
+                    path: "communityId.users",
+                    select: "name username profile_pic"
+                });
+                res.status(200).send(fposts);
             })
-            fposts = await User.populate(fposts, {
-                path: "communityId.users",
-                select: "name username profile_pic"
-            });
-            res.status(200).send(fposts);
-        })
     }
-    catch(err){
-        res.status(400).json({"error": err});
+    catch (err) {
+        console.log(err);
+        res.status(400).json({ "error": ["Some error occurred in fetching posts"] });
     }
-});
+}
 
 
 module.exports = { createPosts, editPosts, likePosts, dislikePosts, fetchPosts };

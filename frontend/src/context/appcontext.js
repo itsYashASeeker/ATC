@@ -13,47 +13,37 @@ const AppProvider = ({ children }) => {
     const [cookies, setCookie] = useCookies(["session"]);
     const navigate = useNavigate();
     const location = useLocation();
+    const fullLocation = location.pathname;
 
+    const accessPaths = ["/login", "/register"];
     useEffect(() => {
-        const accessPaths = ["/login", "/register"];
-        const fetchAccount = async()=>{
-
-            if(cookies.session){
-                try {
-                    const bytes = CryptoJS.AES.decrypt(cookies.session,
-                        process.env.REACT_APP_ENCRYPT_SECRET);
-                    const sessionToken = bytes.toString(CryptoJS.enc.Utf8);
-                    const config = {
-                        headers: {
-                            "Content-type": "application/json",
-                            "Authorization": `Bearer ${sessionToken}`
-                        }
-                    }
-                    await axios.get(process.env.REACT_APP_SERVER_ACCESS_ACCOUNT, config)
-                    .then((response) => {
-                        setUser(response.data.user);
-                    })
-                    if(accessPaths.includes(location.pathname)){
+        const fetchUser = async () => {
+            await axios.get(process.env.REACT_APP_SERVER_ACCESS_ACCOUNT, {
+                withCredentials: true
+            })
+                .then((data) => {
+                    console.clear();
+                    var uDD = data.data;
+                    setUser(uDD);
+                    console.log(uDD.isAdmin ? "Hello Admin" : "Hello User");
+                    if (accessPaths.includes(fullLocation)) {
                         navigate("/");
                     }
-                }
-                catch (err) {
+                })
+                .catch((err) => {
+                    setUser(false);
+                    console.clear();
+                    // var errs = err.response.data.error;
+                    // for (var i = 0; i < errs.length; i++) {
+                    //     console.log(errs[i]);
+                    // }
                     console.log(err);
-                }
-            }
-            else if (accessPaths.includes(location.pathname)) {
-                console.log("Not Authorized");
-            } 
-            else{
-                navigate("/");
-            }
-
+                })
         }
-        fetchAccount();
+        fetchUser();
+    }, [fullLocation])
 
-    }, [navigate]);
-
-    return (<AppContext.Provider value={{ user, setUser }}>{children}</AppContext.Provider>)
+    return (<AppContext.Provider value={{ userD: [user, setUser] }}>{children}</AppContext.Provider>)
 };
 
 export const AppState = () => {

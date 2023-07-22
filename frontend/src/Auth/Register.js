@@ -1,51 +1,136 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useCookies } from "react-cookie";
-import CryptoJS from "crypto-js";
+import { useNavigate } from "react-router-dom";
+import "../css/index1.css";
+import "../css/auth.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowUp, faCheckCircle, faCircleCheck, faCircleExclamation, faSquarePlus } from '@fortawesome/free-solid-svg-icons';
 
-function Register() {
-    const [name, setName] = useState();
+
+export default function Register() {
     const [username, setUsername] = useState();
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
-    const [cookies, setCookie] = useCookies(["session"]);
+    const [upassword, setUPassword] = useState();
+    const [ucpassword, setUCPassword] = useState();
+    const [loadUn, setLoadUn] = useState();
 
-    const register = async () => {
-        if (!name || !email || !username || !password) {
-            window.alert("Please enter all fields!");
-            return;
+    const navigate = useNavigate();
+
+    const timer = ms => new Promise(res => setTimeout(res, ms));
+
+    function retId(idname) {
+        return document.getElementById(idname)
+    }
+
+    const validateField = async (val, fieldType) => {
+        await timer(200);
+        await axios.post(process.env.REACT_APP_SERVER_URL + "/validate-fields", { fields: [fieldType, val] },
+            { withCredentials: true })
+            .then((data) => {
+                // console.log(data.data);
+                console.clear();
+                setLoadUn(1);
+            })
+            .catch((err) => {
+                setLoadUn(-1);
+                console.clear();
+                var errs = err.response.data.error;
+                for (var i = 0; i < errs.length; i++) {
+                    console.log(errs[i]);
+                }
+            })
+    }
+
+    const doRegister = async () => {
+        retId("loginB").classList.add("paddRM");
+        retId("loginLoader").classList.add("fullOp");
+        await timer(100);
+        retId("loginB").setAttribute("disabled", "disabled");
+        await timer(200);
+        await axios.post(process.env.REACT_APP_SERVER_URL + "/register", {
+            username,
+            password: upassword
+        }, { withCredentials: true }
+        )
+            .then((data) => {
+                console.clear();
+                window.alert(data.data)
+            })
+            .catch((err) => {
+                retId("loginB").removeAttribute("disabled");
+                console.clear();
+                var errs = err.response.data.error;
+                for (var i = 0; i < errs.length; i++) {
+                    window.alert(errs[i]);
+                }
+            })
+        retId("loginB").classList.remove("paddRM");
+        retId("loginLoader").classList.remove("fullOp");
+    }
+    
+    const register = () => {
+        if (!username || loadUn != 1) {
+            retId("iduUsername").classList.add("openSpI1")
+            retId("iduUsername").focus();
         }
-        try {
-            const config = {
-                headers: {
-                    "Content-type": "application/json"
-                }
-            }
-            await axios.post(process.env.REACT_APP_SERVER_URL + "/register",
-                { name, email, username, password },
-                config)
-                .then((response) => {
-                    const tt = response.data.user.token;
-                    const sessionToken = CryptoJS.AES.encrypt(tt,
-                        process.env.REACT_APP_ENCRYPT_SECRET).toString();
-                    setCookie("session", sessionToken, { path: "/", maxAge: 60 * 60 * 24 * 2 });
-                    window.alert("User successfully registered!");
-                }
-                );
-        } catch (error) {
-            window.alert("Some error occured..Please try again!");
+        else if (!upassword) {
+            retId("iduPassword").classList.add("openSpI1")
+            retId("iduPassword").focus();
+        }
+        else if (!ucpassword) {
+            retId("iduCPassword").classList.add("openSpI1")
+            retId("iduCPassword").focus();
+        }
+        else {
+            doRegister();
+        }
+    }
+
+
+    const handleUsername = (val) => {
+        if (!val)
+            setLoadUn();
+        else {
+            setLoadUn(0);
+            validateField(val, "username");
         }
     }
 
     return (
         <>
-            <input placeholder="name" onChange={(e) => setName(e.target.value)}></input>
-            <input placeholder="username" onChange={(e) => setUsername(e.target.value)}></input>
-            <input type="email" placeholder="email" onChange={(e) => setEmail(e.target.value)}></input>
-            <input type="password" placeholder="password" onChange={(e) => setPassword(e.target.value)}></input>
-            <button onClick={register}>Register</button>
+            <div className="divf fDirC fullbg">
+                <div className=" loginC bRadiusS paddS posR marginS">
+                    <span className="spinner"></span>
+                    <div className="fullWHP divf fDirC posR bgWhite paddMM">
+                        <p className="mTopS lTitle">Register your account on Asynchronous..</p>
+                        <div className="divf insD posR mTopL">
+                            <p className="bRadiusSM paddSM divf spP1">Username {username ? <>: {username}</> : <></>}</p>
+                            <input type="text" id="iduUsername" className="bRadiusSM paddSM spI1" placeholder="Username" onChange={(e) => { setUsername(e.target.value); handleUsername(e.target.value) }} value={username}></input>
+                            {loadUn === 0 ?
+                                <span className="comment loader1"></span> : <></>
+                            }
+                            {loadUn === -1 ?
+                                <FontAwesomeIcon className="comment cRed" icon={faCircleExclamation} /> : <></>
+                            }
+                            {loadUn === 1 ?
+                                <FontAwesomeIcon className="comment cGreen" icon={faCheckCircle} /> : <></>
+                            }
+                        </div>
+                        <div className="divf insD posR mTopS">
+                            <p className="bRadiusSM paddSM divf spP1">{upassword ? <>{upassword.split("").map((el) => { return <>*</> })}</> : <>Password</>}</p>
+                            <input type="password" id="iduPassword" className="bRadiusSM paddSM spI1" placeholder="Password" onChange={(e) => { setUPassword(e.target.value); }} value={upassword}></input>
+                        </div>
+                        <div className="divf insD posR mTopS">
+                            <p className="bRadiusSM paddSM divf spP1">{ucpassword ? <>{ucpassword.split("").map((el) => { return <>*</> })}</> : <>Confirm Password</>}</p>
+                            <input type="password" id="iduCPassword" className="bRadiusSM paddSM spI1" placeholder="Password" onChange={(e) => { setUCPassword(e.target.value); }} value={ucpassword}></input>
+                        </div>
+                        <div className="divf jusSpaceB mTopL">
+                            <button id="loginB" className="posR paddSM bRadiusSM buttonAS" onClick={register}>Register<span id="loginLoader" className="loader1"></span></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         </>
     )
 }
-
-export default Register;

@@ -11,10 +11,8 @@ const userSchema = mongoose.Schema({
     followers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     following: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     profile_pic: { type: String, default: "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png" },
-    // communities: { type: mongoose.Schema.Types.ObjectId , ref: "Communities"}
-
-
-    // token
+    isAdmin: { default: false, type: Boolean },
+    communities: { type: mongoose.Schema.Types.ObjectId, ref: "Communities" }
 }, {
     timestampes: true,
 });

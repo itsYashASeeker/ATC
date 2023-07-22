@@ -1,0 +1,138 @@
+.sideP {
+    top: calc(var(--pTopH)+50%);
+    top: -moz-calc(var(--pTopH)+50%);
+    top: 50%;
+    position: fixed;
+    min-width: 1rem;
+    max-width: 11.5rem;
+    /* width: 10rem; */
+    /* height: 70vh; */
+    background: rgb(179, 244, 255);
+    margin-left: clamp(1rem, 5vw, 2rem);
+    transform: translate(0, -50%);
+}
+
+.sidePB {
+    background: rgba(188,
+            245,
+            255,
+            0.3);
+    width: 100%;
+    transition: 0.2s all ease-out;
+}
+
+.sidePB:hover {
+    opacity: 1;
+    background: rgb(220, 249, 255);
+}
+
+.mainP {
+    /* background: rgba(0, 128, 0, 0.329); */
+    margin-left: calc(12rem + 5vw);
+    margin-left: -moz-calc(12rem+5vw);
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.postCard {
+    max-width: 25rem;
+    overflow-wrap: break-word;
+    background: rgba(192, 255, 252, 0.4);
+    /* cursor: pointer; */
+    transition: all 0.2s ease-out, box-shadow 0s;
+}
+
+.postCard:hover {
+    background: rgb(255, 255, 255);
+    border: 0.15rem solid darkcyan;
+    box-shadow: 0 0 0.1rem 200rem rgba(70, 69, 69, 0.4);
+    transform: scale(1.05);
+    z-index: 10;
+}
+
+.pCard {
+    width: 15rem;
+    height: 15rem;
+    background: white;
+}
+
+.postContent{
+    background: rgba(192, 255, 252, 0.4);
+}
+
+.showPost {
+    display: none;
+}
+
+.lAndC {
+    justify-content: left;
+    background: rgba(216, 216, 216, 0.3);
+    width: fit-content;
+}
+
+.lAndC button {
+    background: rgba(216, 216, 216, 0.582);
+}
+
+.postCard:hover .showPost {
+    display: flex;
+}
+
+.pComments {
+    display: none;
+    position: absolute;
+    top: calc(100% - 1rem);
+    top: -moz-calc(100% - 1rem);
+    left: 5%;
+    width: calc(100% - 1.1rem);
+    width: -moz-calc(100% - 1.1rem);
+    background: white;
+    border: 0.1rem solid darkcyan;
+    max-height: 10rem;
+    overflow: auto;
+}
+
+.pCCard {
+    background: rgb(231, 231, 231);
+    margin: 0.2rem 0;
+    font-size: 1rem;
+    width: 100%;
+}
+
+.pcAuthor {
+    text-align: left;
+    font-size: 0.7rem;
+    margin-bottom: 0.2rem;
+}
+
+.doComment {
+    width: 100%;
+    margin: 0.3rem 0;
+}
+
+.doComment input {
+    /* width: 100%; */
+    flex-grow: 1;
+    border: 0.1rem solid rgb(12, 92, 92);
+}
+
+.insSP{
+    background: rgb(224, 224, 224);
+    border: 0.2rem solid rgb(180,180,180);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

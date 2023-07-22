@@ -1,16 +1,16 @@
 const express = require("express");
 
 const router = express.Router();
-const { RegisterUser, LoginUser, searchUsers, 
-    followAccount, unFollowAccount, accessAccount, 
-    accessAccountInfo } = require("../controllers/userControl");
+const { RegisterUser, LoginUser, searchUsers,
+    followAccount, unFollowAccount, accessAccount,
+    accessAccountInfo, validateField } = require("../controllers/userControl");
 const authorize = require("../middleware/authorize");
-const { accessChat, fetchChats, createGroup, renameGroup, 
+const { accessChat, fetchChats, createGroup, renameGroup,
     addUserToGrp, removeUserFromGrp } = require("../controllers/chats.js");
-const { createPosts, editPosts, likePosts, 
+const { createPosts, editPosts, likePosts,
     dislikePosts, fetchPosts } = require("../controllers/Posts");
 const { commentOnPosts, likeOnComment, dislikeOnComment } = require("../controllers/comments.js")
-const { fetchCommunity, fetchCommPosts, createCommunity, 
+const { fetchCommunity, fetchCommPosts, createCommunity,
     addUserToCommunity, joinCommunity, makeAccAsAdmin,
     removeAdmin, postOnCommunity, editPostsOnCommunity } = require("../controllers/Community");
 
@@ -26,6 +26,9 @@ router.route("/search/users").get(authorize, searchUsers);
 
 // Access User info
 router.route("/user/access/account").get(authorize, accessAccountInfo);
+
+// validate fields
+router.route("/validate-fields").post(validateField);
 
 // Connection
 router.route("/follow").post(authorize, followAccount);

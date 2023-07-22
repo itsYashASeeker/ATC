@@ -2,54 +2,41 @@ import React, { useEffect, useState } from "react";
 import { AppState } from "../context/appcontext";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import "../User/user.css";
+import "../css/navbar.css";
+import "../css/index1.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlusSquare, faSearch, faUserCircle } from "@fortawesome/free-solid-svg-icons";
 
-export default function Navbar(){
+export default function Navbar() {
 
-    const { user } = AppState();
-    const [cookies, setCookie, removeCookie] = useCookies(["session"]);
-    const [viewD, setViewD] = useState(false);
+    const { userD } = AppState();
+    const [uD, setUD] = userD;
     const navigate = useNavigate();
-
     const logoutFunc = () => {
-        removeCookie("session", { path: "/" });
-        navigate("/");
+        // removeCookie("session", { path: "/" });
+        // navigate("/");
     }
 
     const goTo = (ll) => {
         navigate("/" + ll);
     }
 
-    const handleD = () =>{
-        if(viewD){
-            setViewD(false);
-        }
-        else{
-            setViewD(true);
-        }
-    }
+
 
     // window.onclick(function(){
     //     setViewD(false);
     // })
 
-    return(
-        <div className="navbar dflex">
-            <div className="fGr1">
-                <h1>ATC</h1>
-            </div>
-            <div className="userD">
-                <button onClick={handleD}>Dashboard</button>
-                {viewD ? 
-                    <div className="dashb">
-                        <p>{user.username}</p>
-                        <p>{user.email}</p>
-                        <p><span>Followers: </span><span>{user.followers.length}</span></p>
-                        <p>Following: {user.following.length}</p>
-                    </div>
-                    : <></>
-                }
-            </div>
+    return (
+        <div className="divf navbar paddSM">
+            {uD ?
+                <div className="divf jusSpaceB">
+                    <button className="profileS f1-5 paddSM bRadiusSM">Search... <FontAwesomeIcon icon={faSearch} /></button>
+                    <button className="profileS f1-5 paddSM bRadiusS">Create <FontAwesomeIcon icon={faPlusSquare} /></button>
+                </div>
+                :
+                <></>
+            }
 
         </div>
     )

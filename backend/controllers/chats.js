@@ -57,7 +57,6 @@ const fetchChats = asyncHandler(async (req, res) => {
     }
     catch (err) {
         res.status(400);
-        throw new Error(err);
     }
 
 });

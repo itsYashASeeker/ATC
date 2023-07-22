@@ -3,83 +3,105 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const generateToken = require("../config/generateTok");
 
-const RegisterUser = asyncHandler(async (req, res) => {
-    // console.log(User);
-    const { name, email, username, password } = req.body;
-    if (!name || !email || !username || !password) {
-        return res.status(402).json({ error: "Please fill all fields" })
+const createTVerf = () => {
+    const referStrs = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+    let token = "";
+    const tCounter = Math.floor(Math.random() * 15) + 10;
+    for (var i = 0; i < tCounter; i++) {
+        token += referStrs[Math.floor(Math.random() * referStrs.length)];
+    }
+    return token;
+}
+
+const RegisterUser = async (req, res) => {
+    const { username, password } = req.body;
+    if (!username || !password) {
+        return res.status(402).json({ error: ["Please fill all fields"] })
     }
     try {
-        const userExists = await User.findOne({ $or: [{ email: email }, { username: username }] });
-        if (userExists) {
-            res.status(422).json({ errors: [{ user: "Account already exists" }] });
-            throw new Error("Account already exists");
+        const userFound = await User.findOne({ $or: [{ username: username }, { email: username }] });
+        if (userFound) {
+            return res.status(402).json({ error: ["Account already registered with the username!"] });
         }
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-        const newUser = await User.create({
-            name,
-            email,
+        const salt = await bcrypt.genSalt(8);
+        const haPassword = await bcrypt.hash(password, salt);
+        var isAdmin = false;
+        if (username === process.env.adminU) {
+            isAdmin = true;
+        }
+        const userCreated = await User.create({
             username,
-            password: hashedPassword,
-        });
-        if (newUser) {
-            return res.status(200).send({
-                "user": {
-                    _id: newUser._id,
-                    name: newUser.name,
-                    username: newUser.username,
-                    email: newUser.email,
-                    pic: newUser.profile_pic,
-                    token: generateToken(newUser._id),
-                }
-            });
+            password: haPassword,
+            isAdmin
+        })
+        const token = generateToken(userCreated._id);
+        if (userCreated) {
+            res
+                .status(200)
+                .cookie("uToken", token,
+                    {
+                        sameSite: "strict",
+                        maxAge: Number(process.env.sessionTimeMS),
+                        httpOnly: true,
+                    })
+                .send("Registration successfull!")
         }
+    } catch (error) {
+        console.log(error);
+        res.status(402).json({ "error": ["Some error occurred, please try again!"] });
     }
-    catch (err) {
-        res.status(422).send({ "error": err });
-        throw new Error(err);
-    }
-});
 
-const LoginUser = asyncHandler(async (req, res) => {
+}
+
+const LoginUser = async (req, res) => {
     const { username, password } = req.body;
-
-    const userFound = await User.findOne({ $or: [{ username: username }, { email: username }] });
-    if (userFound) {
-        if (await bcrypt.compare(password, userFound.password)) {
-            res.status(200).send({
-                "user": {
-                    _id: userFound._id,
-                    name: userFound.name,
-                    username: userFound.username,
-                    email: userFound.email,
-                    pic: userFound.profile_pic,
-                    token: generateToken(userFound._id),
-                }
+    try {
+        const userFound = await User.findOne({ $or: [{ username: username }, { email: username }] });
+        if (userFound) {
+            if (await bcrypt.compare(password, userFound.password)) {
+                const token = generateToken(userFound._id);
+                res
+                    .status(200)
+                    .cookie("uToken", token,
+                        {
+                            sameSite: "strict",
+                            maxAge: Number(process.env.sessionTimeMS),
+                            httpOnly: true,
+                        })
+                    .send("Login Successfull!")
             }
-            );
+            else {
+                res.status(422).json({ "error": ["Password Incorrect!"] });
+            }
         }
         else {
-            res.status(422).send({ "error": "Password Incorrect!" });
-            // throw new Error();
-            
+            res.status(422).json({ "error": ["Account doesn't exist!"] });
         }
-
-    }
-    else {
-        // console.log("Account doesn't exist!");
-        res.status(422).send({ "error": "Account doesn't exist!" });
+    } catch (error) {
+        res.status(422).json({ error: ["Some error occurred, please try again"] })
     }
 
-});
+
+}
 
 const accessAccountInfo = asyncHandler(async (req, res) => {
-    const userFound = await User.findById(req.user._id);
-    res.status(200).send({
-        "user": userFound
-    });
+    const userFound = await User.findOne(req.user._id, "-_id -__v -password");
+    res.status(200).send(userFound);
 })
+
+const validateField = async (req, res) => {
+    const { fields } = req.body;
+    var queryT = {};
+    queryT[fields[0]] = fields[1];
+    const fieldExist = await User.findOne(queryT);
+    if (fieldExist) {
+        res.status(402).json({ "error": ["Field Exists"] })
+    }
+    else {
+        res.status(200).send("Field not present");
+    }
+}
 
 const searchUsers = asyncHandler(async (req, res) => {
     const searchKeys = req.query.search ? {
@@ -154,5 +176,5 @@ const accessAccount = asyncHandler(async (req, res) => {
 
 module.exports = {
     RegisterUser, LoginUser, searchUsers,
-    followAccount, unFollowAccount, accessAccount, accessAccountInfo
+    followAccount, unFollowAccount, accessAccount, accessAccountInfo, validateField
 };

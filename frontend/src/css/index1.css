@@ -1,0 +1,341 @@
+@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&family=Nanum+Gothic+Coding&family=Roboto:wght@500&family=Share+Tech&family=Ubuntu:wght@300&display=swap');
+
+
+
+
+:root {
+    --bgMain: rgb(231, 253, 255);
+    --mColor: rgb(0, 68, 60);
+    --pTopH: 4rem;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    /* font-family: 'Indie Flower', cursive; */
+    /* font-family: 'Nanum Gothic Coding', monospace; */
+    font-family: 'Roboto', sans-serif;
+    /* font-family: 'Share Tech', sans-serif; */
+    /* font-family: 'Ubuntu', sans-serif;  */
+    /* font-weight: 600; */
+    /* color: var(--mColor); */
+    transition: 0.2s all ease-out;
+}
+
+button {
+    background: none;
+    outline: none;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.6;
+}
+
+.dNone {
+    display: none;
+}
+
+.divf {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fullOp {
+    opacity: 1 !important;
+}
+
+.fDirC {
+    flex-direction: column;
+}
+
+.jusSpaceB {
+    justify-content: space-evenly;
+    width: 100%;
+}
+
+.fullbg {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--bgMain);
+    color: var(--mColor);
+}
+
+.fullWHP {
+    width: 100%;
+    height: 100%;
+}
+
+.fullbgN {
+    padding-top: var(--pTopH);
+}
+
+.posR {
+    position: relative;
+}
+
+.tAlignR{
+    text-align: right;
+}
+
+.jusRight{
+    justify-content: right;
+}
+
+.bgWhite {
+    background: white;
+}
+
+.cGreen {
+    color: green !important;
+}
+
+.cRed {
+    color: red !important;
+}
+
+/* Border radius */
+.bRadiusS {
+    border-radius: 0.3rem;
+}
+
+.bRadiusSM {
+    border-radius: 0.5rem;
+}
+
+.bRadiusSL {
+    border-radius: 0.7rem;
+}
+
+.bRadiusM {
+    border-radius: 1rem;
+}
+
+.bRadiusL {
+    border-radius: 1.5rem;
+}
+
+.bRadiusXL {
+    border-radius: 50%;
+}
+
+/* padding */
+
+.paddS {
+    padding: 0.3rem;
+}
+
+.paddSM {
+    padding: 0.5rem;
+}
+
+.paddM {
+    padding: 1rem;
+}
+
+.paddMM {
+    padding: 1.5rem;
+}
+
+.paddL {
+    padding: 2rem;
+}
+
+.paddRM {
+    padding-right: 1.4rem;
+}
+
+/* margin vertical */
+.marVS {
+    margin: 0.3rem 0;
+}
+
+.marVM {
+    margin: 0.5rem 0;
+}
+
+.marVL {
+    margin: 1rem 0;
+}
+
+.mTopS {
+    margin-top: 0.5rem;
+}
+
+.mTopM {
+    margin-top: 1rem;
+}
+
+.mTopL {
+    margin-top: 2rem;
+}
+
+.marginS {
+    margin: 0.5rem;
+}
+
+/* flex gap */
+.fGapS{
+    gap: 0.5rem;
+}
+
+.fGapM {
+    gap: 1rem;
+}
+
+
+/* font size */
+
+
+
+.f1{
+    font-size: 1rem;
+}
+
+.f1-2 {
+    font-size: 1.2rem;
+}
+
+.f1-3{
+    font-size: 1.3rem;
+}
+
+.f1-5 {
+    font-size: 1.5rem;
+}
+
+/* input css */
+.insD {
+    width: clamp(13rem, 20vw, 20rem);
+    /* height: 2.5rem; */
+    transition: 0.2s all ease-out;
+    overflow: hidden;
+    padding-right: 1.8rem;
+    overflow-wrap: break-word;
+}
+
+
+.insD .spP1 {
+    background: white;
+    border: 0.2rem solid rgb(0, 52, 65);
+    font-size: 1.2rem;
+    width: 100%;
+    height: 100%;
+    color: rgb(0, 49, 43);
+    transition: 0.2s all ease-out;
+
+}
+
+.insD .spI1 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: -100%;
+    font-size: 1.4rem;
+    outline: none;
+    opacity: 0;
+    top: 0;
+    padding-right: 1.8rem;
+    background: rgb(88, 255, 247);
+    color: rgb(0, 49, 43);
+    transition: 0.2s left ease-out, 0.2s opacity ease-out;
+    /* border: 0.15rem solid rgb(34, 29, 29); */
+    border: 0.2rem solid darkcyan;
+}
+
+.insD:hover .spI1 {
+    left: 0;
+    opacity: 1;
+}
+
+.openSpI1 {
+    left: 0 !important;
+    opacity: 1 !important;
+    animation: focusBut 0.3s normal 3;
+}
+
+@keyframes focusBut {
+    0% {
+        background: rgb(255, 255, 255);
+        border: 0.2rem solid rgb(0, 0, 0);
+    }
+
+    100% {
+        background: rgb(88, 255, 247);
+        border: 0.2rem solid darkcyan;
+    }
+}
+
+
+.insD .comment {
+    display: block;
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    top: 50%;
+    /* opacity: 0; */
+    right: 0.4rem;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0);
+    transition: 0.2s all ease-out;
+}
+
+.loader1 {
+    border: 0.15rem solid white;
+    border-color: var(--mColor) transparent var(--mColor) transparent;
+    border-radius: 50%;
+    animation: load1 1s linear infinite;
+}
+
+button .loader1 {
+    opacity: 0;
+    position: absolute;
+    width: 1rem;
+    height: 1rem;
+    top: 50%;
+    right: 0.2rem;
+    transform: translate(0, -50%);
+}
+
+@keyframes load1 {
+    0% {
+        transform: translateY(-50%) rotate(0deg);
+    }
+
+    100% {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+
+.buttonAS {
+    outline: none;
+    border: 0.2rem solid darkcyan;
+    color: rgb(0, 49, 43);
+    font-size: 1.2rem;
+    transition: 0.2s all ease-out;
+}
+
+.buttonAS:hover {
+    opacity: 1;
+    background: cyan;
+}
+
+.buttonAS:active {
+    transform: scale(0.9);
+}
+
+.buttonAS:disabled {
+    opacity: 0.8;
+    cursor: not-allowed;
+}
+
+.buttonAS:disabled:hover {
+    background: none;
+}
+
+.buttonAS:disabled:active {
+    transform: scale(1);
+}

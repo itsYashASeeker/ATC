@@ -1,0 +1,9 @@
+.navbar{
+    position: fixed;
+    justify-content: right;
+    width: 100%;
+}
+
+.profileS{
+    background: rgba(218, 221, 255, 0.9);
+}
